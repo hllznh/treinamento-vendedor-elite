@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gesso Azevedo - Treinamento Vendedor Elite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              500: '#1e40af',
+              600: '#1e3a8a',
+              700: '#1e3370',
+              800: '#172554',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .fade-in { animation: fadeIn 0.2s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <header class="bg-brand-800 text-white shadow-lg">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Gesso Azevedo</h1>
+          <p class="text-brand-200 text-sm md:text-base mt-1">Treinamento Vendedor Elite</p>
+        </div>
+        <button onclick="openModuleModal()" class="bg-white text-brand-800 font-semibold px-4 py-2 rounded-lg hover:bg-brand-100 transition text-sm md:text-base">
+          + Novo Modulo
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    <div id="empty-state" class="hidden text-center py-20">
+      <svg class="mx-auto h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-500">Nenhum modulo cadastrado</h3>
+      <p class="mt-1 text-sm text-gray-400">Clique em "+ Novo Modulo" para comecar.</p>
+    </div>
+
+    <div id="modules-container" class="space-y-6"></div>
+  </main>
+
+  <!-- Modal Modulo -->
+  <div id="module-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md fade-in">
+      <div class="px-6 py-4 border-b border-gray-100">
+        <h2 id="module-modal-title" class="text-lg font-semibold text-gray-800">Novo Modulo</h2>
+      </div>
+      <div class="px-6 py-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Titulo do Modulo</label>
+        <input id="module-name-input" type="text" placeholder="Ex: Tecnicas de Abordagem" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+        <button onclick="closeModuleModal()" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition">Cancelar</button>
+        <button onclick="saveModule()" class="px-4 py-2 text-sm bg-brand-800 text-white rounded-lg hover:bg-brand-700 transition font-medium">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Aula -->
+  <div id="lesson-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md fade-in">
+      <div class="px-6 py-4 border-b border-gray-100">
+        <h2 id="lesson-modal-title" class="text-lg font-semibold text-gray-800">Nova Aula</h2>
+      </div>
+      <div class="px-6 py-4 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Titulo da Aula</label>
+          <input id="lesson-title-input" type="text" placeholder="Ex: Como quebrar objecoes" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Link</label>
+          <input id="lesson-link-input" type="url" placeholder="https://..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+        </div>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+        <button onclick="closeLessonModal()" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition">Cancelar</button>
+        <button onclick="saveLesson()" class="px-4 py-2 text-sm bg-brand-800 text-white rounded-lg hover:bg-brand-700 transition font-medium">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Exclusao -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm fade-in">
+      <div class="px-6 py-5">
+        <h2 class="text-lg font-semibold text-gray-800">Confirmar exclusao</h2>
+        <p id="confirm-message" class="mt-2 text-sm text-gray-600"></p>
+      </div>
+      <div class="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
+        <button onclick="closeConfirmModal()" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition">Cancelar</button>
+        <button onclick="confirmDelete()" class="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== State ==========
+    const STORAGE_KEY = 'gesso_azevedo_wiki';
+
+    function loadData() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    let modules = loadData();
+    let editingModuleId = null;
+    let editingLessonId = null;
+    let currentModuleId = null;
+    let pendingDeleteFn = null;
+
+    // ========== Render ==========
+    function render() {
+      const container = document.getElementById('modules-container');
+      const emptyState = document.getElementById('empty-state');
+
+      if (modules.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      container.innerHTML = modules.map((mod, mi) => `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden fade-in">
+          <div class="bg-brand-800 px-5 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full">Modulo ${mi + 1}</span>
+              <h2 class="text-white font-semibold text-lg">${escapeHtml(mod.name)}</h2>
+            </div>
+            <div class="flex items-center gap-1">
+              ${mi > 0 ? `<button onclick="moveModule('${mod.id}', -1)" class="p-1.5 text-white/70 hover:text-white transition" title="Mover para cima">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+              </button>` : ''}
+              ${mi < modules.length - 1 ? `<button onclick="moveModule('${mod.id}', 1)" class="p-1.5 text-white/70 hover:text-white transition" title="Mover para baixo">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>` : ''}
+              <button onclick="openEditModuleModal('${mod.id}')" class="p-1.5 text-white/70 hover:text-white transition" title="Editar modulo">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              </button>
+              <button onclick="requestDeleteModule('${mod.id}')" class="p-1.5 text-white/70 hover:text-red-300 transition" title="Excluir modulo">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="divide-y divide-gray-100">
+            ${mod.lessons.length === 0 ? `
+              <div class="px-5 py-8 text-center text-gray-400 text-sm">Nenhuma aula adicionada neste modulo.</div>
+            ` : mod.lessons.map((lesson, li) => `
+              <div class="px-5 py-3 flex items-center justify-between group hover:bg-gray-50 transition">
+                <div class="flex items-center gap-3 min-w-0">
+                  <span class="flex-shrink-0 w-7 h-7 bg-brand-100 text-brand-800 rounded-full flex items-center justify-center text-xs font-bold">${li + 1}</span>
+                  <div class="min-w-0">
+                    <a href="${escapeHtml(lesson.link)}" target="_blank" rel="noopener noreferrer" class="text-sm font-medium text-gray-800 hover:text-brand-500 transition truncate block">${escapeHtml(lesson.title)}</a>
+                    <p class="text-xs text-gray-400 truncate">${escapeHtml(lesson.link)}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition flex-shrink-0 ml-2">
+                  ${li > 0 ? `<button onclick="moveLesson('${mod.id}', '${lesson.id}', -1)" class="p-1 text-gray-400 hover:text-gray-600" title="Mover para cima">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                  </button>` : ''}
+                  ${li < mod.lessons.length - 1 ? `<button onclick="moveLesson('${mod.id}', '${lesson.id}', 1)" class="p-1 text-gray-400 hover:text-gray-600" title="Mover para baixo">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </button>` : ''}
+                  <button onclick="openEditLessonModal('${mod.id}', '${lesson.id}')" class="p-1 text-gray-400 hover:text-brand-500" title="Editar aula">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                  </button>
+                  <button onclick="requestDeleteLesson('${mod.id}', '${lesson.id}')" class="p-1 text-gray-400 hover:text-red-500" title="Excluir aula">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="px-5 py-3 border-t border-gray-100">
+            <button onclick="openLessonModal('${mod.id}')" class="text-sm text-brand-500 hover:text-brand-700 font-medium transition flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Adicionar Aula
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ========== Helpers ==========
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function findModule(id) {
+      return modules.find(m => m.id === id);
+    }
+
+    // ========== Module CRUD ==========
+    function openModuleModal() {
+      editingModuleId = null;
+      document.getElementById('module-modal-title').textContent = 'Novo Modulo';
+      document.getElementById('module-name-input').value = '';
+      document.getElementById('module-modal').classList.remove('hidden');
+      document.getElementById('module-name-input').focus();
+    }
+
+    function openEditModuleModal(id) {
+      const mod = findModule(id);
+      if (!mod) return;
+      editingModuleId = id;
+      document.getElementById('module-modal-title').textContent = 'Editar Modulo';
+      document.getElementById('module-name-input').value = mod.name;
+      document.getElementById('module-modal').classList.remove('hidden');
+      document.getElementById('module-name-input').focus();
+    }
+
+    function closeModuleModal() {
+      document.getElementById('module-modal').classList.add('hidden');
+      editingModuleId = null;
+    }
+
+    function saveModule() {
+      const name = document.getElementById('module-name-input').value.trim();
+      if (!name) return;
+
+      if (editingModuleId) {
+        const mod = findModule(editingModuleId);
+        if (mod) mod.name = name;
+      } else {
+        modules.push({ id: uid(), name, lessons: [] });
+      }
+
+      saveData(modules);
+      render();
+      closeModuleModal();
+    }
+
+    function requestDeleteModule(id) {
+      const mod = findModule(id);
+      if (!mod) return;
+      document.getElementById('confirm-message').textContent = `Tem certeza que deseja excluir o modulo "${mod.name}" e todas as suas aulas?`;
+      pendingDeleteFn = () => {
+        modules = modules.filter(m => m.id !== id);
+        saveData(modules);
+        render();
+      };
+      document.getElementById('confirm-modal').classList.remove('hidden');
+    }
+
+    function moveModule(id, dir) {
+      const idx = modules.findIndex(m => m.id === id);
+      if (idx < 0) return;
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= modules.length) return;
+      [modules[idx], modules[newIdx]] = [modules[newIdx], modules[idx]];
+      saveData(modules);
+      render();
+    }
+
+    // ========== Lesson CRUD ==========
+    function openLessonModal(moduleId) {
+      currentModuleId = moduleId;
+      editingLessonId = null;
+      document.getElementById('lesson-modal-title').textContent = 'Nova Aula';
+      document.getElementById('lesson-title-input').value = '';
+      document.getElementById('lesson-link-input').value = '';
+      document.getElementById('lesson-modal').classList.remove('hidden');
+      document.getElementById('lesson-title-input').focus();
+    }
+
+    function openEditLessonModal(moduleId, lessonId) {
+      const mod = findModule(moduleId);
+      if (!mod) return;
+      const lesson = mod.lessons.find(l => l.id === lessonId);
+      if (!lesson) return;
+      currentModuleId = moduleId;
+      editingLessonId = lessonId;
+      document.getElementById('lesson-modal-title').textContent = 'Editar Aula';
+      document.getElementById('lesson-title-input').value = lesson.title;
+      document.getElementById('lesson-link-input').value = lesson.link;
+      document.getElementById('lesson-modal').classList.remove('hidden');
+      document.getElementById('lesson-title-input').focus();
+    }
+
+    function closeLessonModal() {
+      document.getElementById('lesson-modal').classList.add('hidden');
+      currentModuleId = null;
+      editingLessonId = null;
+    }
+
+    function saveLesson() {
+      const title = document.getElementById('lesson-title-input').value.trim();
+      const link = document.getElementById('lesson-link-input').value.trim();
+      if (!title || !link) return;
+
+      const mod = findModule(currentModuleId);
+      if (!mod) return;
+
+      if (editingLessonId) {
+        const lesson = mod.lessons.find(l => l.id === editingLessonId);
+        if (lesson) {
+          lesson.title = title;
+          lesson.link = link;
+        }
+      } else {
+        mod.lessons.push({ id: uid(), title, link });
+      }
+
+      saveData(modules);
+      render();
+      closeLessonModal();
+    }
+
+    function requestDeleteLesson(moduleId, lessonId) {
+      const mod = findModule(moduleId);
+      if (!mod) return;
+      const lesson = mod.lessons.find(l => l.id === lessonId);
+      if (!lesson) return;
+      document.getElementById('confirm-message').textContent = `Tem certeza que deseja excluir a aula "${lesson.title}"?`;
+      pendingDeleteFn = () => {
+        mod.lessons = mod.lessons.filter(l => l.id !== lessonId);
+        saveData(modules);
+        render();
+      };
+      document.getElementById('confirm-modal').classList.remove('hidden');
+    }
+
+    function moveLesson(moduleId, lessonId, dir) {
+      const mod = findModule(moduleId);
+      if (!mod) return;
+      const idx = mod.lessons.findIndex(l => l.id === lessonId);
+      if (idx < 0) return;
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= mod.lessons.length) return;
+      [mod.lessons[idx], mod.lessons[newIdx]] = [mod.lessons[newIdx], mod.lessons[idx]];
+      saveData(modules);
+      render();
+    }
+
+    // ========== Confirm Delete ==========
+    function closeConfirmModal() {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      pendingDeleteFn = null;
+    }
+
+    function confirmDelete() {
+      if (pendingDeleteFn) pendingDeleteFn();
+      closeConfirmModal();
+    }
+
+    // ========== Keyboard ==========
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModuleModal();
+        closeLessonModal();
+        closeConfirmModal();
+      }
+      if (e.key === 'Enter') {
+        if (!document.getElementById('module-modal').classList.contains('hidden')) saveModule();
+        else if (!document.getElementById('lesson-modal').classList.contains('hidden')) saveLesson();
+      }
+    });
+
+    // ========== Init ==========
+    render();
+  </script>
+</body>
+</html>
